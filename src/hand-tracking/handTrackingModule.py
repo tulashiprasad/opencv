@@ -2,7 +2,6 @@ import cv2
 import mediapipe as mp
 import time
 
-
 class handDtetcor:
     def __init__(
         self,
@@ -43,11 +42,11 @@ class handDtetcor:
         img_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         # Process the image and find hand landmarks
-        results = self.hands.process(img_rgb)
+        self.results = self.hands.process(img_rgb)
 
         # Draw the landmarks and connections
-        if results.multi_hand_landmarks:
-            for handLandmarks in results.multi_hand_landmarks:
+        if self.results.multi_hand_landmarks:
+            for handLandmarks in self.results.multi_hand_landmarks:
                 if draw:
                     self.mpDraw.draw_landmarks(
                         image,
@@ -58,13 +57,21 @@ class handDtetcor:
                     )
         return image
 
+    def findLandmarks(self, image, handNo=0, landMarkn0=0, draw=True):
         # for hand landmarks
-        # for id, lm in enumerate(handLandmarks.landmark):
-        #     h, w, c = image.shape
-        #     center_x, center_y = int(lm.x * w), int(lm.y * h)
-        #     # print(id, center_x, center_y)
-        #     # if id == 4:
-        #     # cv2.circle(image, (center_x, center_y), 15, (255, 0, 255), cv2.FILLED)
+        landmarks = []
+        if self.results.multi_hand_landmarks:
+            myHand = self.results.multi_hand_landmarks[handNo]
+            for id, lm in enumerate(myHand.landmark):
+                h, w, c = image.shape
+                center_x, center_y = int(lm.x * w), int(lm.y * h)
+                # print(id, center_x, center_y)
+                landmarks.append([id, center_x, center_y])
+                # if id == 4:
+                # if draw and id == landMarkn0:
+                if draw:
+                    cv2.circle(image, (center_x, center_y), 15, (255, 0, 0), cv2.FILLED)
+        return landmarks
 
 
 def main():
@@ -77,7 +84,8 @@ def main():
         if not ret:
             break
         image = detector.findHands(image)
-
+        landmarks = detector.findLandmarks(image)
+        print(landmarks)
         cTime = time.time()
         fps = 1 / (cTime - pTime)
         pTime = cTime
@@ -92,8 +100,8 @@ def main():
             break
 
     # Release the capture and close windows
-    # cap.release()
-    # cv2.destroyAllWindows()
+    cap.release()
+    cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
