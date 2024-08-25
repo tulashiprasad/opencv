@@ -36,10 +36,10 @@ while True:
         for handLandmarks in results.multi_hand_landmarks:
             for id, lm in enumerate(handLandmarks.landmark):
                 h, w, c = image.shape
-                center_x, center_y = int(lm.x * w) , int(lm.y * h)
+                center_x, center_y = int(lm.x * w), int(lm.y * h)
                 # print(id, center_x, center_y)
                 # if id == 4:
-                    # cv2.circle(image, (center_x, center_y), 15, (255, 0, 255), cv2.FILLED)
+                # cv2.circle(image, (center_x, center_y), 15, (255, 0, 255), cv2.FILLED)
             mpDraw.draw_landmarks(
                 image,
                 handLandmarks,
