@@ -13,7 +13,8 @@ while True:
         break
     image = detector.findHands(image)
     landmarks = detector.findLandmarks(image)
-    print(landmarks)
+    if len(landmarks) != 0:
+        print(landmarks[0])
     cTime = time.time()
     fps = 1 / (cTime - pTime)
     pTime = cTime
